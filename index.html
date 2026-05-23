@@ -21,6 +21,7 @@
     --green: #22c55e;
     --green-dim: rgba(34,197,94,0.1);
     --red: #ef4444;
+    --orange: #f97316;
     --shadow: 0 4px 24px rgba(10,124,110,0.08);
     --shadow-lg: 0 8px 40px rgba(10,124,110,0.15);
   }
@@ -35,7 +36,6 @@
     padding-bottom: 40px;
   }
 
-  /* HEADER */
   .header {
     background: var(--teal);
     padding: 28px 20px 60px;
@@ -50,14 +50,6 @@
     height: 60px;
     background: var(--bg);
     border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  }
-  .header::after {
-    content: '';
-    position: absolute;
-    top: -80px; right: -80px;
-    width: 200px; height: 200px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 50%;
   }
   .clinic-icon {
     width: 64px; height: 64px;
@@ -80,10 +72,40 @@
     font-size: 13px;
     color: rgba(255,255,255,0.7);
     position: relative; z-index: 1;
-    font-weight: 400;
   }
 
-  /* MAIN */
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text3);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.2s;
+    margin-bottom: -2px;
+  }
+  .tab-btn.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
   .main {
     max-width: 480px;
     margin: -20px auto 0;
@@ -91,7 +113,6 @@
     position: relative; z-index: 2;
   }
 
-  /* CARD */
   .card {
     background: var(--white);
     border-radius: 20px;
@@ -117,7 +138,6 @@
     flex-shrink: 0;
   }
 
-  /* FORM */
   .field { margin-bottom: 16px; }
   .field label {
     display: block;
@@ -129,7 +149,7 @@
     margin-bottom: 6px;
   }
   .field label span { color: var(--red); margin-left: 2px; }
-  .field input, .field textarea {
+  .field input, .field textarea, .field select {
     width: 100%;
     background: var(--bg);
     border: 1.5px solid var(--border);
@@ -141,22 +161,99 @@
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     -webkit-appearance: none;
+    appearance: none;
   }
-  .field input:focus, .field textarea:focus {
+  .field input:focus, .field select:focus {
     border-color: var(--teal);
     box-shadow: 0 0 0 3px var(--teal-dim);
     background: white;
   }
   .field input::placeholder { color: var(--text3); }
-  .field textarea { resize: none; height: 80px; }
-
-  .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  .field input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  /* SUBMIT BUTTON */
+  /* RETURNING PATIENT BANNER */
+  .returning-banner {
+    display: none;
+    background: rgba(10,124,110,0.08);
+    border: 1.5px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 600;
+    align-items: center;
+    gap: 8px;
+  }
+  .returning-banner.show { display: flex; }
+
+  /* SLOTS */
+  .slots-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .slots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .slot-btn {
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .slot-btn:hover:not(.booked) {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--teal-dim);
+  }
+  .slot-btn.selected {
+    background: var(--teal);
+    color: white;
+    border-color: var(--teal);
+  }
+  .slot-btn.booked {
+    background: var(--bg);
+    color: var(--text3);
+    border-color: var(--border);
+    cursor: not-allowed;
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+  .slots-loading {
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    padding: 16px;
+    display: none;
+  }
+  .no-date-msg {
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
   .btn-submit {
     width: 100%;
     background: var(--teal);
@@ -175,11 +272,9 @@
     justify-content: center;
     gap: 8px;
   }
-  .btn-submit:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: var(--shadow); }
-  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:hover { background: var(--teal-light); transform: translateY(-1px); }
   .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-  /* LOADING */
   .spinner {
     width: 18px; height: 18px;
     border: 2px solid rgba(255,255,255,0.3);
@@ -190,7 +285,7 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* SUCCESS CARD */
+  /* SUCCESS */
   .success-card {
     display: none;
     background: var(--white);
@@ -214,20 +309,9 @@
     font-size: 32px;
     margin: 0 auto 16px;
   }
-  .success-card h2 {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .success-card p {
-    font-size: 13px;
-    color: var(--text2);
-    margin-bottom: 20px;
-    line-height: 1.6;
-  }
+  .success-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .success-card p { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.6; }
 
-  /* PATIENT SUMMARY */
   .summary {
     background: var(--bg);
     border-radius: 12px;
@@ -238,7 +322,6 @@
   .summary-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     padding: 5px 0;
     border-bottom: 1px solid var(--border);
     font-size: 13px;
@@ -247,7 +330,6 @@
   .summary-row span:first-child { color: var(--text3); font-weight: 600; }
   .summary-row span:last-child { color: var(--text); font-weight: 700; }
 
-  /* WHATSAPP BUTTONS */
   .wa-btn {
     display: flex;
     align-items: center;
@@ -265,22 +347,11 @@
     text-decoration: none;
     transition: all 0.2s;
   }
-  .wa-patient {
-    background: #25D366;
-    color: white;
-  }
-  .wa-patient:hover { background: #20ba59; transform: translateY(-1px); }
+  .wa-patient { background: #25D366; color: white; }
+  .wa-patient:hover { background: #20ba59; }
+  .wa-doctor { background: var(--teal-dim); color: var(--teal); border: 1.5px solid var(--teal-border); }
+  .wa-doctor:hover { background: rgba(10,124,110,0.12); }
 
-  .wa-doctor {
-    background: var(--teal-dim);
-    color: var(--teal);
-    border: 1.5px solid var(--teal-border);
-  }
-  .wa-doctor:hover { background: rgba(10,124,110,0.12); transform: translateY(-1px); }
-
-  .wa-icon { font-size: 20px; }
-
-  /* NEW BOOKING BUTTON */
   .btn-new {
     width: 100%;
     background: none;
@@ -297,7 +368,91 @@
   }
   .btn-new:hover { border-color: var(--teal); color: var(--teal); }
 
-  /* FOOTER */
+  .error-msg {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--red);
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* DASHBOARD */
+  .dash-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .dash-date {
+    flex: 1;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    outline: none;
+  }
+  .dash-refresh {
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+  }
+
+  .appt-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--teal);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .appt-time {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--teal);
+    width: 60px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .appt-info { flex: 1; }
+  .appt-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .appt-note { font-size: 12px; color: var(--text3); }
+  .appt-phone { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  .empty-dash {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text3);
+    font-size: 14px;
+  }
+  .empty-dash div { font-size: 40px; margin-bottom: 12px; }
+
+  .dash-count {
+    background: var(--teal-dim);
+    border: 1px solid var(--teal-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
   .footer {
     text-align: center;
     padding: 16px;
@@ -305,7 +460,6 @@
     color: var(--text3);
   }
 
-  /* INFO ROW */
   .info-row {
     display: flex;
     gap: 10px;
@@ -323,18 +477,6 @@
     font-weight: 700;
   }
   .info-chip .ic-icon { font-size: 18px; margin-bottom: 3px; }
-
-  /* ERROR */
-  .error-msg {
-    background: rgba(239,68,68,0.08);
-    border: 1px solid rgba(239,68,68,0.25);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 13px;
-    color: var(--red);
-    margin-top: 12px;
-    display: none;
-  }
 </style>
 </head>
 <body>
@@ -345,52 +487,66 @@
   <p>Appointment Booking System</p>
 </div>
 
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('booking', this)">📅 Book Appointment</button>
+  <button class="tab-btn" onclick="switchTab('dashboard', this)">📋 Dashboard</button>
+</div>
+
+<!-- BOOKING TAB -->
+<div class="tab-content active" id="tab-booking">
 <div class="main">
 
-  <!-- INFO CHIPS -->
   <div class="info-row">
-    <div class="info-chip">
-      <div class="ic-icon">⚡</div>
-      Instant Confirmation
-    </div>
-    <div class="info-chip">
-      <div class="ic-icon">💬</div>
-      WhatsApp Notify
-    </div>
-    <div class="info-chip">
-      <div class="ic-icon">📍</div>
-      Location Shared
-    </div>
+    <div class="info-chip"><div class="ic-icon">⚡</div>Instant Confirm</div>
+    <div class="info-chip"><div class="ic-icon">💬</div>WhatsApp Notify</div>
+    <div class="info-chip"><div class="ic-icon">🕐</div>15 Min Slots</div>
   </div>
 
   <!-- BOOKING FORM -->
   <div class="card" id="formCard">
-    <div class="card-title">Book New Appointment</div>
+    <div class="card-title">New Appointment</div>
+
+    <!-- PHONE FIRST — for returning patient check -->
+    <div class="field">
+      <label>WhatsApp Number <span>*</span></label>
+      <input type="tel" id="phoneNumber" placeholder="Enter 10-digit number first" maxlength="10"
+        oninput="checkReturningPatient(this.value)" autocomplete="off">
+    </div>
+
+    <!-- RETURNING PATIENT BANNER -->
+    <div class="returning-banner" id="returningBanner">
+      <span>👋</span>
+      <span id="returningText">Returning patient detected — name auto filled</span>
+    </div>
 
     <div class="field">
       <label>Patient Name <span>*</span></label>
-      <input type="text" id="patientName" placeholder="Enter patient full name" autocomplete="off">
+      <input type="text" id="patientName" placeholder="Patient full name" autocomplete="off">
     </div>
 
+    <!-- DATE -->
     <div class="field">
-      <label>WhatsApp Number <span>*</span></label>
-      <input type="tel" id="phoneNumber" placeholder="10-digit mobile number" maxlength="10" autocomplete="off">
+      <label>Date <span>*</span></label>
+      <input type="date" id="appointmentDate" onchange="loadSlots()" autocomplete="off">
     </div>
 
-    <div class="field-row">
-      <div class="field">
-        <label>Date <span>*</span></label>
-        <input type="date" id="appointmentDate">
-      </div>
-      <div class="field">
-        <label>Time <span>*</span></label>
-        <input type="time" id="appointmentTime">
+    <!-- TIME SLOTS -->
+    <div id="slotsSection">
+      <div class="no-date-msg" id="noDateMsg">Please select a date to see available slots</div>
+      <div class="slots-loading" id="slotsLoading">Loading available slots...</div>
+      <div id="slotsContainer" style="display:none;">
+        <span class="slots-label">Available Time Slots <span style="color:var(--red)">*</span></span>
+        <div class="slots-grid" id="slotsGrid"></div>
       </div>
     </div>
+
+    <!-- HIDDEN TIME FIELD -->
+    <input type="hidden" id="selectedTime">
 
     <div class="field">
       <label>Note (optional)</label>
-      <textarea id="note" placeholder="e.g. BP followup, new patient, diabetes review..."></textarea>
+      <input type="text" id="note" placeholder="e.g. BP followup, new patient..." autocomplete="off">
     </div>
 
     <button class="btn-submit" id="submitBtn" onclick="submitAppointment()">
@@ -406,101 +562,237 @@
     <div class="success-icon">✅</div>
     <h2>Appointment Booked!</h2>
     <p>Tap the buttons below to send WhatsApp confirmation to the patient and notify the doctor.</p>
-
     <div class="summary" id="summary"></div>
-
     <a class="wa-btn wa-patient" id="patientWABtn" href="#" target="_blank">
-      <span class="wa-icon">📲</span>
-      Send Confirmation to Patient
+      <span>📲</span> Send Confirmation to Patient
     </a>
-
     <a class="wa-btn wa-doctor" id="doctorWABtn" href="#" target="_blank">
-      <span class="wa-icon">👨‍⚕️</span>
-      Notify Doctor
+      <span>👨‍⚕️</span> Notify Doctor
     </a>
-
-    <button class="btn-new" onclick="resetForm()">
-      + Book Another Appointment
-    </button>
+    <button class="btn-new" onclick="resetForm()">+ Book Another Appointment</button>
   </div>
 
   <div class="footer">Sanjeev Clinic · Powered by ClinicDesk</div>
 </div>
+</div>
+
+<!-- DASHBOARD TAB -->
+<div class="tab-content" id="tab-dashboard">
+<div class="main" style="padding-top:20px;">
+
+  <div class="card" style="padding:20px 24px;">
+    <div class="card-title">Appointment Dashboard</div>
+
+    <div class="dash-header">
+      <input type="date" class="dash-date" id="dashDate" onchange="loadDashboard()">
+      <button class="dash-refresh" onclick="loadDashboard()">Refresh</button>
+    </div>
+
+    <div id="dashCount" class="dash-count" style="display:none;"></div>
+    <div id="dashList"></div>
+  </div>
+
+  <div class="footer">Sanjeev Clinic · Powered by ClinicDesk</div>
+</div>
+</div>
 
 <script>
-  // ─── CONFIG ───────────────────────────────────────────────
-  const SHEET_ID = '1cO40VaIZ8YnTOOI9Ex_7uTQdLtMNyfBuLt0RoQgc9NE';
+  // ─── CONFIG ─────────────────────────────────────────────────
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwYq7pQZApqfXIT1A_HjpbOTlL5GXPbODAjrfHMhA5cA281_NBK9x02miOy0II8sHTLkg/exec';
   const DOCTOR_NUMBER = '919600072961';
   const CLINIC_NAME = 'Sanjeev Clinic';
   const CLINIC_LOCATION = 'https://maps.app.goo.gl/9KZaH98o9xp9ixF17';
-  const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-  // ──────────────────────────────────────────────────────────
+  const SHEET_ID = '1cO40VaIZ8YnTOOI9Ex_7uTQdLtMNyfBuLt0RoQgc9NE';
 
-  // Set today as minimum date
-  document.getElementById('appointmentDate').min = new Date().toISOString().split('T')[0];
+  // Clinic hours: 5 PM to 9 PM, 15 min slots
+  const CLINIC_START = 17; // 5 PM
+  const CLINIC_END = 21;   // 9 PM
+  const SLOT_MINUTES = 15;
+  // ────────────────────────────────────────────────────────────
 
+  // Set today as min date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('appointmentDate').min = today;
+  document.getElementById('dashDate').value = today;
+
+  // All possible slots
+  function generateAllSlots() {
+    const slots = [];
+    for (let h = CLINIC_START; h < CLINIC_END; h++) {
+      for (let m = 0; m < 60; m += SLOT_MINUTES) {
+        const hour12 = h > 12 ? h - 12 : h;
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const minStr = m === 0 ? '00' : m;
+        slots.push(`${hour12}:${minStr} ${ampm}`);
+      }
+    }
+    return slots;
+  }
+
+  // Format date for display
   function formatDate(dateStr) {
     if (!dateStr) return '';
-    const d = new Date(dateStr);
+    const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
-  function formatTime(timeStr) {
-    if (!timeStr) return '';
-    const [h, m] = timeStr.split(':');
-    const hour = parseInt(h);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const hour12 = hour % 12 || 12;
-    return `${hour12}:${m} ${ampm}`;
+  // Tab switching
+  function switchTab(tab, el) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    el.classList.add('active');
+    if (tab === 'dashboard') loadDashboard();
   }
 
+  // ─── RETURNING PATIENT CHECK ─────────────────────────────────
+  let returningPatientName = '';
+  let checkTimeout = null;
+
+  function checkReturningPatient(phone) {
+    clearTimeout(checkTimeout);
+    const banner = document.getElementById('returningBanner');
+    const nameField = document.getElementById('patientName');
+
+    if (phone.length !== 10) {
+      banner.classList.remove('show');
+      returningPatientName = '';
+      nameField.value = '';
+      nameField.disabled = false;
+      return;
+    }
+
+    checkTimeout = setTimeout(async () => {
+      try {
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20B%20WHERE%20C%3D%27${phone}%27%20LIMIT%201`;
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+
+        if (json.table && json.table.rows && json.table.rows.length > 0) {
+          const name = json.table.rows[0].c[0].v;
+          returningPatientName = name;
+          nameField.value = name;
+          nameField.disabled = false;
+          document.getElementById('returningText').textContent = `Welcome back, ${name}! Name auto-filled from previous visit.`;
+          banner.classList.add('show');
+        } else {
+          banner.classList.remove('show');
+          returningPatientName = '';
+          if (!nameField.disabled) nameField.value = '';
+        }
+      } catch(e) {
+        banner.classList.remove('show');
+      }
+    }, 600);
+  }
+
+  // ─── SLOT AVAILABILITY ───────────────────────────────────────
+  let bookedSlots = [];
+  let selectedSlot = '';
+
+  async function loadSlots() {
+    const date = document.getElementById('appointmentDate').value;
+    if (!date) return;
+
+    document.getElementById('noDateMsg').style.display = 'none';
+    document.getElementById('slotsLoading').style.display = 'block';
+    document.getElementById('slotsContainer').style.display = 'none';
+    selectedSlot = '';
+    document.getElementById('selectedTime').value = '';
+
+    const formattedDate = formatDate(date);
+
+    try {
+      const encoded = encodeURIComponent(formattedDate);
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20D%20WHERE%20C%3D%27${encoded}%27`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+
+      bookedSlots = [];
+      if (json.table && json.table.rows) {
+        json.table.rows.forEach(row => {
+          if (row.c && row.c[0] && row.c[0].v) {
+            bookedSlots.push(row.c[0].v.trim());
+          }
+        });
+      }
+    } catch(e) {
+      bookedSlots = [];
+    }
+
+    renderSlots(formattedDate);
+  }
+
+  function renderSlots(formattedDate) {
+    const allSlots = generateAllSlots();
+    const grid = document.getElementById('slotsGrid');
+    grid.innerHTML = '';
+
+    allSlots.forEach(slot => {
+      const isBooked = bookedSlots.some(b => b.toLowerCase() === slot.toLowerCase());
+      const btn = document.createElement('button');
+      btn.className = 'slot-btn' + (isBooked ? ' booked' : '');
+      btn.textContent = slot;
+      btn.disabled = isBooked;
+      if (!isBooked) {
+        btn.onclick = () => selectSlot(slot, btn);
+      }
+      grid.appendChild(btn);
+    });
+
+    document.getElementById('slotsLoading').style.display = 'none';
+    document.getElementById('slotsContainer').style.display = 'block';
+  }
+
+  function selectSlot(slot, btn) {
+    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedSlot = slot;
+    document.getElementById('selectedTime').value = slot;
+    hideError();
+  }
+
+  // ─── SUBMIT APPOINTMENT ──────────────────────────────────────
   function showError(msg) {
     const el = document.getElementById('errorMsg');
     el.textContent = msg;
     el.style.display = 'block';
   }
-
   function hideError() {
     document.getElementById('errorMsg').style.display = 'none';
   }
-
   function setLoading(loading) {
     const btn = document.getElementById('submitBtn');
-    const text = document.getElementById('btnText');
-    const spinner = document.getElementById('spinner');
+    document.getElementById('btnText').textContent = loading ? 'Booking...' : 'Book Appointment';
+    document.getElementById('spinner').style.display = loading ? 'block' : 'none';
     btn.disabled = loading;
-    text.textContent = loading ? 'Booking...' : 'Book Appointment';
-    spinner.style.display = loading ? 'block' : 'none';
   }
 
   async function submitAppointment() {
     hideError();
 
-    // Get values
     const patientName = document.getElementById('patientName').value.trim();
     const phoneNumber = document.getElementById('phoneNumber').value.trim();
     const appointmentDate = document.getElementById('appointmentDate').value;
-    const appointmentTime = document.getElementById('appointmentTime').value;
     const note = document.getElementById('note').value.trim();
 
-    // Validate
-    if (!patientName) { showError('Please enter patient name.'); return; }
     if (!phoneNumber || phoneNumber.length !== 10 || isNaN(phoneNumber)) { showError('Please enter a valid 10-digit phone number.'); return; }
-    if (!appointmentDate) { showError('Please select appointment date.'); return; }
-    if (!appointmentTime) { showError('Please select appointment time.'); return; }
+    if (!patientName) { showError('Please enter patient name.'); return; }
+    if (!appointmentDate) { showError('Please select a date.'); return; }
+    if (!selectedSlot) { showError('Please select a time slot.'); return; }
 
     setLoading(true);
 
     const formattedDate = formatDate(appointmentDate);
-    const formattedTime = formatTime(appointmentTime);
     const timestamp = new Date().toLocaleString('en-IN');
 
-    // Save to Google Sheet via Apps Script Web App
-    // Using Google Forms submit URL approach
+    // Save to sheet
     try {
-      await saveToSheet(patientName, phoneNumber, formattedDate, formattedTime, note, timestamp);
+      await saveToSheet(patientName, phoneNumber, formattedDate, selectedSlot, note, timestamp);
     } catch(e) {
-      console.log('Sheet save attempted');
+      console.log('Save attempted');
     }
 
     setLoading(false);
@@ -512,7 +804,7 @@
       `Your appointment at ${CLINIC_NAME} is confirmed.`,
       ``,
       `Date: ${formattedDate}`,
-      `Time: ${formattedTime}`,
+      `Time: ${selectedSlot}`,
       ``,
       `Find us here: ${CLINIC_LOCATION}`,
       ``,
@@ -526,47 +818,33 @@
       `Patient: ${patientName}`,
       `Phone: ${phoneNumber}`,
       `Date: ${formattedDate}`,
-      `Time: ${formattedTime}`,
+      `Time: ${selectedSlot}`,
       `Note: ${note || 'No note'}`
     ].join('%0A');
 
     const patientLink = `https://wa.me/91${phoneNumber}?text=${patientMsg}`;
     const doctorLink = `https://wa.me/${DOCTOR_NUMBER}?text=${doctorMsg}`;
 
-    // Build summary
-    const summary = document.getElementById('summary');
-    summary.innerHTML = `
+    // Summary
+    document.getElementById('summary').innerHTML = `
       <div class="summary-row"><span>Patient</span><span>${patientName}</span></div>
       <div class="summary-row"><span>Phone</span><span>${phoneNumber}</span></div>
       <div class="summary-row"><span>Date</span><span>${formattedDate}</span></div>
-      <div class="summary-row"><span>Time</span><span>${formattedTime}</span></div>
+      <div class="summary-row"><span>Time</span><span>${selectedSlot}</span></div>
       ${note ? `<div class="summary-row"><span>Note</span><span>${note}</span></div>` : ''}
     `;
 
-    // Set WhatsApp links
     document.getElementById('patientWABtn').href = patientLink;
     document.getElementById('doctorWABtn').href = doctorLink;
 
-    // Show success card
     document.getElementById('formCard').style.display = 'none';
     document.getElementById('successCard').style.display = 'block';
-
-    // Scroll to top
     window.scrollTo(0, 0);
   }
 
   async function saveToSheet(name, phone, date, time, note, timestamp) {
-    // This saves data to Google Sheet
-    // You need to set up Apps Script Web App and paste the URL below
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwYq7pQZApqfXIT1A_HjpbOTlL5GXPbODAjrfHMhA5cA281_NBK9x02miOy0II8sHTLkg/exec';
-
-    if (APPS_SCRIPT_URL === 'PASTE_YOUR_APPS_SCRIPT_URL_HERE') {
-      console.log('Apps Script URL not configured yet');
-      return;
-    }
-
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('PASTE')) return;
     const data = { name, phone, date, time, note, timestamp };
-
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -576,26 +854,79 @@
   }
 
   function resetForm() {
-    // Reset form
     document.getElementById('patientName').value = '';
+    document.getElementById('patientName').disabled = false;
     document.getElementById('phoneNumber').value = '';
     document.getElementById('appointmentDate').value = '';
-    document.getElementById('appointmentTime').value = '';
     document.getElementById('note').value = '';
+    document.getElementById('selectedTime').value = '';
+    document.getElementById('returningBanner').classList.remove('show');
+    document.getElementById('slotsContainer').style.display = 'none';
+    document.getElementById('noDateMsg').style.display = 'block';
+    selectedSlot = '';
+    bookedSlots = [];
     hideError();
-
-    // Show form hide success
     document.getElementById('formCard').style.display = 'block';
     document.getElementById('successCard').style.display = 'none';
-
-    // Scroll to top
     window.scrollTo(0, 0);
-
-    // Focus first field
-    document.getElementById('patientName').focus();
   }
+
+  // ─── DASHBOARD ───────────────────────────────────────────────
+  async function loadDashboard() {
+    const date = document.getElementById('dashDate').value;
+    if (!date) return;
+
+    const formattedDate = formatDate(date);
+    const dashList = document.getElementById('dashList');
+    const dashCount = document.getElementById('dashCount');
+
+    dashList.innerHTML = '<div class="empty-dash"><div>⏳</div>Loading appointments...</div>';
+    dashCount.style.display = 'none';
+
+    try {
+      const encoded = encodeURIComponent(formattedDate);
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20A%2CB%2CC%2CD%2CE%20WHERE%20C%3D%27${encoded}%27%20ORDER%20BY%20D`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+
+      if (!json.table || !json.table.rows || json.table.rows.length === 0) {
+        dashList.innerHTML = '<div class="empty-dash"><div>📭</div>No appointments for this date</div>';
+        return;
+      }
+
+      const rows = json.table.rows;
+      dashCount.textContent = `${rows.length} appointment${rows.length > 1 ? 's' : ''} on ${formattedDate}`;
+      dashCount.style.display = 'block';
+
+      dashList.innerHTML = '';
+      rows.forEach(row => {
+        const name = row.c[1] ? row.c[1].v : '';
+        const phone = row.c[2] ? row.c[2].v : '';
+        const time = row.c[3] ? row.c[3].v : '';
+        const note = row.c[4] ? row.c[4].v : '';
+
+        const card = document.createElement('div');
+        card.className = 'appt-card';
+        card.innerHTML = `
+          <div class="appt-time">${time}</div>
+          <div class="appt-info">
+            <div class="appt-name">${name}</div>
+            <div class="appt-phone">📱 ${phone}</div>
+            ${note ? `<div class="appt-note">📝 ${note}</div>` : ''}
+          </div>
+        `;
+        dashList.appendChild(card);
+      });
+
+    } catch(e) {
+      dashList.innerHTML = '<div class="empty-dash"><div>⚠️</div>Could not load appointments. Check internet connection.</div>';
+    }
+  }
+
+  // Load dashboard on page load
+  loadDashboard();
 </script>
 
 </body>
 </html>
-
