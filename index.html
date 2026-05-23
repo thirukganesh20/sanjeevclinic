@@ -171,11 +171,7 @@ body { font-family: Arial, sans-serif; background: #f0f4f3; color: #1a2e2b; min-
   </div>
 
   
-  <!-- DEBUG PANEL - remove after fixing -->
-  <div id="debugPanel" style="margin-top:12px;background:#fff8e1;border:1px solid #f0c040;border-radius:8px;padding:12px;font-size:12px;display:none;">
-    <div style="font-weight:bold;margin-bottom:6px;color:#c07c2a;">Debug — Dates found in sheet:</div>
-    <div id="debugDates" style="color:#666;line-height:1.8;"></div>
-  </div>
+
   <div class="footer">Sanjeev Clinic · Powered by ClinicDesk</div>
 </div>
 </div>
@@ -413,22 +409,10 @@ function fetchAllAppointments() {
       .then(data => {
         allAppts = data;
 
-        // Debug panel
-        const panel = document.getElementById('debugPanel');
-        const debugEl = document.getElementById('debugDates');
-        panel.style.display = 'block';
-        if (allAppts.length > 0) {
-          debugEl.innerHTML = allAppts.map(a =>
-            `<div><b>${a.name}</b> — date: "<span style="color:green">${a.date}</span>" — time: "${a.time}"</div>`
-          ).join('');
-        } else {
-          debugEl.innerHTML = '<div style="color:orange">No appointments found in sheet yet.</div>';
-        }
+
         resolve();
       })
       .catch(e => {
-        document.getElementById('debugPanel').style.display = 'block';
-        document.getElementById('debugDates').innerHTML = `<div style="color:red">Error: ${e.message}</div>`;
         allAppts = [];
         resolve();
       });
