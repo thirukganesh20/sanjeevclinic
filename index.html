@@ -2,589 +2,217 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Sanjeev Clinic — Book Appointment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanjeev Clinic</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Playfair+Display:wght@700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f4f3; color: #1a2e2b; min-height: 100vh; }
 
-  :root {
-    --teal: #0a7c6e;
-    --teal-light: #0d9e8d;
-    --teal-dim: rgba(10,124,110,0.08);
-    --teal-border: rgba(10,124,110,0.2);
-    --bg: #f4f7f6;
-    --white: #ffffff;
-    --text: #1a2e2b;
-    --text2: #4a6662;
-    --text3: #8aada8;
-    --border: #d8e8e5;
-    --green: #22c55e;
-    --green-dim: rgba(34,197,94,0.1);
-    --red: #ef4444;
-    --orange: #f97316;
-    --shadow: 0 4px 24px rgba(10,124,110,0.08);
-    --shadow-lg: 0 8px 40px rgba(10,124,110,0.15);
-  }
+.header { background: #0a7c6e; padding: 20px 16px; text-align: center; color: white; }
+.header h1 { font-size: 22px; font-weight: bold; margin-bottom: 2px; }
+.header p { font-size: 12px; opacity: 0.8; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+.tabs { display: flex; background: white; border-bottom: 2px solid #d0e4e0; position: sticky; top: 0; z-index: 50; }
+.tab-btn { flex: 1; padding: 12px 8px; font-size: 13px; font-weight: bold; color: #888; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-family: Arial, sans-serif; margin-bottom: -2px; }
+.tab-btn.active { color: #0a7c6e; border-bottom-color: #0a7c6e; }
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 40px;
-  }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
 
-  .header {
-    background: var(--teal);
-    padding: 28px 20px 32px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .header::before {
-    content: '';
-    position: absolute;
-  .clinic-icon {
-    width: 64px; height: 64px;
-    background: rgba(255,255,255,0.15);
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 18px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 30px;
-    margin: 0 auto 14px;
-    position: relative; z-index: 1;
-  }
-  .header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    color: white;
-    margin-bottom: 4px;
-    position: relative; z-index: 1;
-  }
-  .header p {
-    font-size: 13px;
-    color: rgba(255,255,255,0.7);
-    position: relative; z-index: 1;
-  }
+.wrap { max-width: 460px; margin: 0 auto; padding: 14px; }
 
-  /* TABS */
-  .tabs {
-    display: flex;
-    background: var(--white);
-    border-bottom: 2px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .tab-btn {
-    flex: 1;
-    padding: 14px 8px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text3);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    transition: all 0.2s;
-    margin-bottom: -2px;
-  }
-  .tab-btn.active {
-    color: var(--teal);
-    border-bottom-color: var(--teal);
-  }
+.chips { display: flex; gap: 8px; margin-bottom: 14px; margin-top: 14px; }
+.chip { flex: 1; background: #e0f2ee; border: 1px solid #a8d5cc; border-radius: 8px; padding: 8px 4px; text-align: center; font-size: 11px; font-weight: bold; color: #0a7c6e; }
 
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
+.card { background: white; border-radius: 12px; padding: 18px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+.card-title { font-size: 15px; font-weight: bold; color: #0a7c6e; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #e0f2ee; }
 
-  .main {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 16px;
-    position: relative; z-index: 2;
-  }
+.field { margin-bottom: 13px; }
+.field label { display: block; font-size: 11px; font-weight: bold; color: #4a6662; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+.req { color: #e53e3e; }
+.field input { width: 100%; border: 1.5px solid #d0e4e0; border-radius: 8px; padding: 11px 13px; font-size: 15px; font-family: Arial, sans-serif; color: #1a2e2b; background: #f8fbfb; outline: none; }
+.field input:focus { border-color: #0a7c6e; background: white; }
 
-  .card {
-    background: var(--white);
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
-    padding: 28px 24px;
-    margin-bottom: 16px;
-  }
+.ret-banner { display: none; background: #e0f2ee; border: 1.5px solid #a8d5cc; border-radius: 8px; padding: 10px 13px; font-size: 13px; font-weight: bold; color: #0a7c6e; margin-bottom: 13px; }
+.ret-banner.show { display: block; }
 
-  .card-title {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-title::before {
-    content: '';
-    width: 4px; height: 20px;
-    background: var(--teal);
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
+.slots-title { font-size: 11px; font-weight: bold; color: #4a6662; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 13px; }
+.slot { padding: 9px 4px; border-radius: 8px; border: 1.5px solid #d0e4e0; background: white; font-size: 11px; font-weight: bold; color: #4a6662; cursor: pointer; text-align: center; font-family: Arial, sans-serif; }
+.slot:hover:not(:disabled) { border-color: #0a7c6e; color: #0a7c6e; background: #e0f2ee; }
+.slot.selected { background: #0a7c6e; color: white; border-color: #0a7c6e; }
+.slot.booked { background: #f0f4f3; color: #bbb; text-decoration: line-through; cursor: not-allowed; opacity: 0.6; }
+.slot-msg { font-size: 13px; color: #888; text-align: center; padding: 14px; background: #f8fbfb; border-radius: 8px; margin-bottom: 13px; }
 
-  .field { margin-bottom: 16px; }
-  .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-  .field label span { color: var(--red); margin-left: 2px; }
-  .field input, .field textarea, .field select {
-    width: 100%;
-    background: var(--bg);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 13px 16px;
-    font-size: 15px;
-    font-family: 'Nunito', sans-serif;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .field input:focus, .field select:focus {
-    border-color: var(--teal);
-    box-shadow: 0 0 0 3px var(--teal-dim);
-    background: white;
-  }
-  .field input::placeholder { color: var(--text3); }
-  .field input:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.btn-submit { width: 100%; background: #0a7c6e; color: white; border: none; border-radius: 10px; padding: 14px; font-size: 15px; font-weight: bold; font-family: Arial, sans-serif; cursor: pointer; }
+.btn-submit:hover { background: #0d9e8d; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.error { background: #fff0f0; border: 1px solid #ffaaaa; border-radius: 8px; padding: 10px 13px; font-size: 13px; color: #cc0000; margin-top: 10px; display: none; }
 
-  /* RETURNING PATIENT BANNER */
-  .returning-banner {
-    display: none;
-    background: rgba(10,124,110,0.08);
-    border: 1.5px solid var(--teal-border);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: var(--teal);
-    font-weight: 600;
-    align-items: center;
-    gap: 8px;
-  }
-  .returning-banner.show { display: flex; }
+.success-card { display: none; background: white; border-radius: 12px; padding: 22px 18px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); text-align: center; }
+.success-icon { font-size: 44px; margin-bottom: 10px; }
+.success-card h2 { font-size: 20px; margin-bottom: 8px; }
+.success-card p { font-size: 13px; color: #4a6662; margin-bottom: 14px; }
+.summary { background: #f0f4f3; border-radius: 8px; padding: 12px 13px; margin-bottom: 14px; text-align: left; }
+.sum-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #d0e4e0; font-size: 13px; }
+.sum-row:last-child { border-bottom: none; }
+.sum-row span:first-child { color: #888; }
+.sum-row span:last-child { font-weight: bold; }
+.wa-btn { display: block; width: 100%; padding: 13px; border-radius: 10px; font-size: 15px; font-weight: bold; text-align: center; text-decoration: none; margin-bottom: 8px; font-family: Arial, sans-serif; border: none; cursor: pointer; }
+.wa-green { background: #25D366; color: white; }
+.wa-teal { background: #e0f2ee; color: #0a7c6e; border: 1.5px solid #a8d5cc; }
+.btn-new { width: 100%; background: none; border: 1.5px solid #d0e4e0; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: bold; color: #4a6662; font-family: Arial, sans-serif; cursor: pointer; margin-top: 4px; }
+.btn-new:hover { border-color: #0a7c6e; color: #0a7c6e; }
 
-  /* SLOTS */
-  .slots-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    display: block;
-  }
-  .slots-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .slot-btn {
-    padding: 10px 6px;
-    border-radius: 10px;
-    border: 1.5px solid var(--border);
-    background: var(--white);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text2);
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    transition: all 0.15s;
-    text-align: center;
-  }
-  .slot-btn:hover:not(.booked) {
-    border-color: var(--teal);
-    color: var(--teal);
-    background: var(--teal-dim);
-  }
-  .slot-btn.selected {
-    background: var(--teal);
-    color: white;
-    border-color: var(--teal);
-  }
-  .slot-btn.booked {
-    background: var(--bg);
-    color: var(--text3);
-    border-color: var(--border);
-    cursor: not-allowed;
-    text-decoration: line-through;
-    opacity: 0.5;
-  }
-  .slots-loading {
-    font-size: 13px;
-    color: var(--text3);
-    text-align: center;
-    padding: 16px;
-    display: none;
-  }
-  .no-date-msg {
-    font-size: 13px;
-    color: var(--text3);
-    text-align: center;
-    padding: 16px;
-    background: var(--bg);
-    border-radius: 12px;
-    margin-bottom: 16px;
-  }
+/* ── CALENDAR ─────────────────────────────────── */
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.cal-nav button { background: #e0f2ee; border: 1px solid #a8d5cc; border-radius: 8px; padding: 8px 14px; font-size: 16px; font-weight: bold; color: #0a7c6e; cursor: pointer; font-family: Arial, sans-serif; }
+.cal-month { font-size: 17px; font-weight: bold; color: #1a2e2b; }
 
-  .btn-submit {
-    width: 100%;
-    background: var(--teal);
-    color: white;
-    border: none;
-    border-radius: 14px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .btn-submit:hover { background: var(--teal-light); transform: translateY(-1px); }
-  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-day-hdr { text-align: center; font-size: 11px; font-weight: bold; color: #888; padding: 6px 0; }
+.cal-cell { min-height: 52px; border-radius: 8px; padding: 5px 4px; cursor: pointer; position: relative; border: 1.5px solid transparent; transition: border-color 0.15s; }
+.cal-cell:hover { border-color: #0a7c6e; background: #f0faf8; }
+.cal-cell.empty { cursor: default; }
+.cal-cell.empty:hover { border-color: transparent; background: none; }
+.cal-cell.today { background: #e0f2ee; border-color: #0a7c6e; }
+.cal-cell.selected { background: #0a7c6e; border-color: #0a7c6e; }
+.cal-cell.selected .cal-num { color: white; }
+.cal-cell.selected .cal-dot { background: white; }
+.cal-cell.selected .cal-count { color: white; opacity: 0.9; }
+.cal-num { font-size: 13px; font-weight: bold; color: #1a2e2b; text-align: center; }
+.cal-cell.other-month .cal-num { color: #ccc; }
+.cal-dots { display: flex; justify-content: center; gap: 2px; margin-top: 3px; flex-wrap: wrap; }
+.cal-dot { width: 6px; height: 6px; border-radius: 50%; background: #0a7c6e; }
+.cal-count { text-align: center; font-size: 10px; font-weight: bold; color: #0a7c6e; margin-top: 2px; }
 
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    display: none;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* ── APPOINTMENT LIST ─────────────────────────── */
+.appt-header { font-size: 14px; font-weight: bold; color: #0a7c6e; margin-bottom: 10px; padding: 10px 13px; background: #e0f2ee; border-radius: 8px; }
+.appt-row { background: white; border-radius: 10px; padding: 12px 13px; margin-bottom: 8px; border-left: 4px solid #0a7c6e; box-shadow: 0 1px 5px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px; }
+.appt-time { font-size: 13px; font-weight: bold; color: #0a7c6e; width: 54px; flex-shrink: 0; text-align: center; }
+.appt-info { flex: 1; }
+.appt-name { font-size: 14px; font-weight: bold; margin-bottom: 2px; }
+.appt-sub { font-size: 12px; color: #888; }
+.empty { text-align: center; padding: 28px 16px; color: #888; font-size: 14px; }
+.loading { text-align: center; padding: 20px; color: #888; font-size: 13px; }
 
-  /* SUCCESS */
-  .success-card {
-    display: none;
-    background: var(--white);
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
-    padding: 28px 24px;
-    margin-bottom: 16px;
-    text-align: center;
-    animation: slideUp 0.4s ease;
-  }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .success-icon {
-    width: 72px; height: 72px;
-    background: var(--green-dim);
-    border: 2px solid rgba(34,197,94,0.3);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px;
-    margin: 0 auto 16px;
-  }
-  .success-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-  .success-card p { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.6; }
-
-  .summary {
-    background: var(--bg);
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .summary-row:last-child { border-bottom: none; }
-  .summary-row span:first-child { color: var(--text3); font-weight: 600; }
-  .summary-row span:last-child { color: var(--text); font-weight: 700; }
-
-  .wa-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    padding: 15px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    cursor: pointer;
-    border: none;
-    margin-bottom: 10px;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-  .wa-patient { background: #25D366; color: white; }
-  .wa-patient:hover { background: #20ba59; }
-  .wa-doctor { background: var(--teal-dim); color: var(--teal); border: 1.5px solid var(--teal-border); }
-  .wa-doctor:hover { background: rgba(10,124,110,0.12); }
-
-  .btn-new {
-    width: 100%;
-    background: none;
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 13px;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text2);
-    font-family: 'Nunito', sans-serif;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: all 0.2s;
-  }
-  .btn-new:hover { border-color: var(--teal); color: var(--teal); }
-
-  .error-msg {
-    background: rgba(239,68,68,0.08);
-    border: 1px solid rgba(239,68,68,0.25);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 13px;
-    color: var(--red);
-    margin-top: 12px;
-    display: none;
-  }
-
-  /* DASHBOARD */
-  .dash-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .dash-date {
-    flex: 1;
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-family: 'Nunito', sans-serif;
-    color: var(--text);
-    outline: none;
-  }
-  .dash-refresh {
-    background: var(--teal);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 700;
-    font-family: 'Nunito', sans-serif;
-    cursor: pointer;
-  }
-
-  .appt-card {
-    background: var(--white);
-    border-radius: 14px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    border-left: 4px solid var(--teal);
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .appt-time {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--teal);
-    width: 60px;
-    flex-shrink: 0;
-    text-align: center;
-  }
-  .appt-info { flex: 1; }
-  .appt-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
-  .appt-note { font-size: 12px; color: var(--text3); }
-  .appt-phone { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-  .empty-dash {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text3);
-    font-size: 14px;
-  }
-  .empty-dash div { font-size: 40px; margin-bottom: 12px; }
-
-  .dash-count {
-    background: var(--teal-dim);
-    border: 1px solid var(--teal-border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: var(--teal);
-    font-weight: 700;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-
-  .footer {
-    text-align: center;
-    padding: 16px;
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  .info-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .info-chip {
-    flex: 1;
-    background: var(--teal-dim);
-    border: 1px solid var(--teal-border);
-    border-radius: 10px;
-    padding: 10px 12px;
-    text-align: center;
-    font-size: 11px;
-    color: var(--teal);
-    font-weight: 700;
-  }
-  .info-chip .ic-icon { font-size: 18px; margin-bottom: 3px; }
+.footer { text-align: center; padding: 20px; font-size: 11px; color: #aaa; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="clinic-icon">🏥</div>
+  <div style="font-size:32px;margin-bottom:6px;">🏥</div>
   <h1>Sanjeev Clinic</h1>
   <p>Appointment Booking System</p>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('booking', this)">📅 Book Appointment</button>
-  <button class="tab-btn" onclick="switchTab('dashboard', this)">📋 Dashboard</button>
+  <button class="tab-btn active" onclick="showTab('booking',this)">📅 Book Appointment</button>
+  <button class="tab-btn" onclick="showTab('dashboard',this)">📋 Dashboard</button>
 </div>
 
-<!-- BOOKING TAB -->
+<!-- ══════════ BOOKING ══════════ -->
 <div class="tab-content active" id="tab-booking">
-<div class="main" style="padding-top:20px;">
-
-  <div class="info-row">
-    <div class="info-chip"><div class="ic-icon">⚡</div>Instant Confirm</div>
-    <div class="info-chip"><div class="ic-icon">💬</div>WhatsApp Notify</div>
-    <div class="info-chip"><div class="ic-icon">🕐</div>15 Min Slots</div>
+<div class="wrap">
+  <div class="chips">
+    <div class="chip">⚡<br>Instant Confirm</div>
+    <div class="chip">💬<br>WhatsApp Notify</div>
+    <div class="chip">🕐<br>15 Min Slots</div>
   </div>
 
-  <!-- BOOKING FORM -->
   <div class="card" id="formCard">
     <div class="card-title">New Appointment</div>
 
-    <!-- PHONE FIRST — for returning patient check -->
     <div class="field">
-      <label>WhatsApp Number <span>*</span></label>
-      <input type="tel" id="phoneNumber" placeholder="Enter 10-digit number first" maxlength="10"
-        oninput="checkReturningPatient(this.value)" autocomplete="off">
+      <label>WhatsApp Number <span class="req">*</span></label>
+      <input type="tel" id="phoneNumber" placeholder="Enter 10-digit number first" maxlength="10" oninput="checkReturning(this.value)">
     </div>
 
-    <!-- RETURNING PATIENT BANNER -->
-    <div class="returning-banner" id="returningBanner">
-      <span>👋</span>
-      <span id="returningText">Returning patient detected — name auto filled</span>
+    <div class="ret-banner" id="retBanner">
+      👋 <span id="retText">Returning patient — name auto filled</span>
     </div>
 
     <div class="field">
-      <label>Patient Name <span>*</span></label>
-      <input type="text" id="patientName" placeholder="Patient full name" autocomplete="off">
+      <label>Patient Name <span class="req">*</span></label>
+      <input type="text" id="patientName" placeholder="Patient full name">
     </div>
 
-    <!-- DATE -->
     <div class="field">
-      <label>Date <span>*</span></label>
-      <input type="date" id="appointmentDate" onchange="loadSlots()" autocomplete="off">
+      <label>Date <span class="req">*</span></label>
+      <input type="date" id="apptDate" onchange="loadSlots()">
     </div>
 
-    <!-- TIME SLOTS -->
-    <div id="slotsSection">
-      <div class="no-date-msg" id="noDateMsg">Please select a date to see available slots</div>
-      <div class="slots-loading" id="slotsLoading">Loading available slots...</div>
-      <div id="slotsContainer" style="display:none;">
-        <span class="slots-label">Available Time Slots <span style="color:var(--red)">*</span></span>
-        <div class="slots-grid" id="slotsGrid"></div>
+    <div id="slotSection">
+      <div class="slot-msg" id="slotMsg">Select a date to see available slots</div>
+      <div id="slotWrap" style="display:none;">
+        <div class="slots-title">Pick a Time Slot <span class="req">*</span></div>
+        <div class="slots-grid" id="slotGrid"></div>
       </div>
     </div>
 
-    <!-- HIDDEN TIME FIELD -->
-    <input type="hidden" id="selectedTime">
-
     <div class="field">
       <label>Note (optional)</label>
-      <input type="text" id="note" placeholder="e.g. BP followup, new patient..." autocomplete="off">
+      <input type="text" id="note" placeholder="e.g. BP followup, new patient">
     </div>
 
-    <button class="btn-submit" id="submitBtn" onclick="submitAppointment()">
-      <span id="btnText">Book Appointment</span>
-      <div class="spinner" id="spinner"></div>
-    </button>
-
-    <div class="error-msg" id="errorMsg"></div>
+    <button class="btn-submit" id="subBtn" onclick="bookAppointment()">Book Appointment</button>
+    <div class="error" id="errMsg"></div>
   </div>
 
-  <!-- SUCCESS CARD -->
   <div class="success-card" id="successCard">
     <div class="success-icon">✅</div>
     <h2>Appointment Booked!</h2>
-    <p>Tap the buttons below to send WhatsApp confirmation to the patient and notify the doctor.</p>
-    <div class="summary" id="summary"></div>
-    <a class="wa-btn wa-patient" id="patientWABtn" href="#" target="_blank">
-      <span>📲</span> Send Confirmation to Patient
-    </a>
-    <a class="wa-btn wa-doctor" id="doctorWABtn" href="#" target="_blank">
-      <span>👨‍⚕️</span> Notify Doctor
-    </a>
+    <p>Tap below to send WhatsApp confirmation and notify the doctor.</p>
+    <div class="summary" id="summaryBox"></div>
+    <a class="wa-btn wa-green" id="waPatient" href="#" target="_blank">📲 Send Confirmation to Patient</a>
+    <a class="wa-btn wa-teal" id="waDoctor" href="#" target="_blank">👨‍⚕️ Notify Doctor</a>
     <button class="btn-new" onclick="resetForm()">+ Book Another Appointment</button>
   </div>
 
+  
+  <!-- DEBUG PANEL - remove after fixing -->
+  <div id="debugPanel" style="margin-top:12px;background:#fff8e1;border:1px solid #f0c040;border-radius:8px;padding:12px;font-size:12px;display:none;">
+    <div style="font-weight:bold;margin-bottom:6px;color:#c07c2a;">Debug — Dates found in sheet:</div>
+    <div id="debugDates" style="color:#666;line-height:1.8;"></div>
+  </div>
   <div class="footer">Sanjeev Clinic · Powered by ClinicDesk</div>
 </div>
 </div>
 
-<!-- DASHBOARD TAB -->
+<!-- ══════════ DASHBOARD ══════════ -->
 <div class="tab-content" id="tab-dashboard">
-<div class="main" style="padding-top:20px;">
+<div class="wrap" style="padding-top:14px;">
 
-  <div class="card" style="padding:20px 24px;">
-    <div class="card-title">Appointment Dashboard</div>
+  <div class="card">
+    <div class="card-title">📅 Appointment Calendar</div>
 
-    <div class="dash-header">
-      <input type="date" class="dash-date" id="dashDate" onchange="loadDashboard()">
-      <button class="dash-refresh" onclick="loadDashboard()">Refresh</button>
+    <!-- Calendar navigation -->
+    <div class="cal-nav">
+      <button onclick="changeMonth(-1)">&#8249;</button>
+      <div class="cal-month" id="calMonth"></div>
+      <button onclick="changeMonth(1)">&#8250;</button>
     </div>
 
-    <div id="dashCount" class="dash-count" style="display:none;"></div>
-    <div id="dashList"></div>
+    <!-- Day headers -->
+    <div class="cal-grid" id="calHeader">
+      <div class="cal-day-hdr">Sun</div>
+      <div class="cal-day-hdr">Mon</div>
+      <div class="cal-day-hdr">Tue</div>
+      <div class="cal-day-hdr">Wed</div>
+      <div class="cal-day-hdr">Thu</div>
+      <div class="cal-day-hdr">Fri</div>
+      <div class="cal-day-hdr">Sat</div>
+    </div>
+
+    <!-- Calendar cells -->
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <!-- Appointments for selected date -->
+  <div id="apptSection" style="display:none;">
+    <div class="appt-header" id="apptHeader"></div>
+    <div id="apptList"></div>
   </div>
 
   <div class="footer">Sanjeev Clinic · Powered by ClinicDesk</div>
@@ -592,356 +220,367 @@
 </div>
 
 <script>
-  // ─── CONFIG ─────────────────────────────────────────────────
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwYq7pQZApqfXIT1A_HjpbOTlL5GXPbODAjrfHMhA5cA281_NBK9x02miOy0II8sHTLkg/exec';
-  const DOCTOR_NUMBER = '919600072961';
-  const CLINIC_NAME = 'Sanjeev Clinic';
-  const CLINIC_LOCATION = 'https://maps.app.goo.gl/9KZaH98o9xp9ixF17';
-  const SHEET_ID = '1cO40VaIZ8YnTOOI9Ex_7uTQdLtMNyfBuLt0RoQgc9NE';
+// ── CONFIG ────────────────────────────────────────────────
+const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbwYq7pQZApqfXIT1A_HjpbOTlL5GXPbODAjrfHMhA5cA281_NBK9x02miOy0II8sHTLkg/exec';
+const DOCTOR_NUM  = '919600072961';
+const CLINIC_NAME = 'Sanjeev Clinic';
+const CLINIC_LOC  = 'https://maps.app.goo.gl/9KZaH98o9xp9ixF17';
+const SHEET_ID    = '1cO40VaIZ8YnTOOI9Ex_7uTQdLtMNyfBuLt0RoQgc9NE';
+const START_H = 17; const END_H = 21; const SLOT_MIN = 15;
+// ─────────────────────────────────────────────────────────
 
-  // Clinic hours: 5 PM to 9 PM, 15 min slots
-  const CLINIC_START = 17; // 5 PM
-  const CLINIC_END = 21;   // 9 PM
-  const SLOT_MINUTES = 15;
-  // ────────────────────────────────────────────────────────────
+const todayStr = new Date().toISOString().split('T')[0];
+document.getElementById('apptDate').min = todayStr;
 
-  // Set today as min date
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('appointmentDate').min = today;
-  document.getElementById('dashDate').value = today;
+function fmtDate(str) {
+  if (!str) return '';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const parts = str.split('-');
+  const y = parseInt(parts[0]);
+  const m = parseInt(parts[1]) - 1;
+  const d = parseInt(parts[2]);
+  const dd = String(d).padStart(2, '0');
+  return `${dd} ${months[m]} ${y}`;
+}
 
-  // All possible slots
-  function generateAllSlots() {
-    const slots = [];
-    for (let h = CLINIC_START; h < CLINIC_END; h++) {
-      for (let m = 0; m < 60; m += SLOT_MINUTES) {
-        const hour12 = h > 12 ? h - 12 : h;
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        const minStr = m === 0 ? '00' : m;
-        slots.push(`${hour12}:${minStr} ${ampm}`);
-      }
+function fmtDateFromParts(y, m, d) {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dd = String(d).padStart(2, '0');
+  return `${dd} ${months[m]} ${y}`;
+}
+
+function allSlots() {
+  const s = [];
+  for (let h = START_H; h < END_H; h++) {
+    for (let m = 0; m < 60; m += SLOT_MIN) {
+      const h12 = h > 12 ? h - 12 : h;
+      const ap = h >= 12 ? 'PM' : 'AM';
+      const mm = m === 0 ? '00' : String(m);
+      s.push(`${h12}:${mm} ${ap}`);
     }
-    return slots;
   }
+  return s;
+}
 
-  // Format date for display
-  function formatDate(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  }
+// ── TAB SWITCH ────────────────────────────────────────────
+function showTab(id, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'dashboard') initCalendar();
+}
 
-  // Tab switching
-  function switchTab(tab, el) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    el.classList.add('active');
-    if (tab === 'dashboard') loadDashboard();
-  }
-
-  // ─── RETURNING PATIENT CHECK ─────────────────────────────────
-  let returningPatientName = '';
-  let checkTimeout = null;
-
-  function checkReturningPatient(phone) {
-    clearTimeout(checkTimeout);
-    const banner = document.getElementById('returningBanner');
-    const nameField = document.getElementById('patientName');
-
-    if (phone.length !== 10) {
+// ── RETURNING PATIENT ─────────────────────────────────────
+let retTimer = null;
+function checkReturning(phone) {
+  clearTimeout(retTimer);
+  const banner = document.getElementById('retBanner');
+  const nameEl = document.getElementById('patientName');
+  if (phone.length !== 10) { banner.classList.remove('show'); nameEl.value = ''; return; }
+  retTimer = setTimeout(() => {
+    // Search in already loaded appointments
+    const found = allAppts.find(a => a.phone === phone);
+    if (found) {
+      nameEl.value = found.name;
+      document.getElementById('retText').textContent = `Welcome back, ${found.name}! Name auto-filled.`;
+      banner.classList.add('show');
+    } else {
       banner.classList.remove('show');
-      returningPatientName = '';
-      nameField.value = '';
-      nameField.disabled = false;
-      return;
+      nameEl.value = '';
     }
+  }, 700);
+}
 
-    checkTimeout = setTimeout(async () => {
-      try {
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20B%20WHERE%20C%3D%27${phone}%27%20LIMIT%201`;
-        const res = await fetch(url);
-        const text = await res.text();
-        const json = JSON.parse(text.substr(47).slice(0, -2));
+// ── SLOTS ─────────────────────────────────────────────────
+let bookedList = []; let chosenSlot = '';
+function loadSlots() {
+  const date = document.getElementById('apptDate').value;
+  if (!date) return;
+  const fd = fmtDate(date);
+  document.getElementById('slotMsg').textContent = 'Loading slots...';
+  document.getElementById('slotMsg').style.display = 'block';
+  document.getElementById('slotWrap').style.display = 'none';
+  chosenSlot = '';
+  bookedList = [];
 
-        if (json.table && json.table.rows && json.table.rows.length > 0) {
-          const name = json.table.rows[0].c[0].v;
-          returningPatientName = name;
-          nameField.value = name;
-          nameField.disabled = false;
-          document.getElementById('returningText').textContent = `Welcome back, ${name}! Name auto-filled from previous visit.`;
-          banner.classList.add('show');
-        } else {
-          banner.classList.remove('show');
-          returningPatientName = '';
-          if (!nameField.disabled) nameField.value = '';
-        }
-      } catch(e) {
-        banner.classList.remove('show');
-      }
-    }, 600);
-  }
+  // Load ALL sheet data then filter by date in JS
+  const cbName = 'slotCb_' + Date.now();
+  const script = document.createElement('script');
+  // No WHERE clause — just get everything
+  script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&callback=${cbName}`;
 
-  // ─── SLOT AVAILABILITY ───────────────────────────────────────
-  let bookedSlots = [];
-  let selectedSlot = '';
-
-  async function loadSlots() {
-    const date = document.getElementById('appointmentDate').value;
-    if (!date) return;
-
-    document.getElementById('noDateMsg').style.display = 'none';
-    document.getElementById('slotsLoading').style.display = 'block';
-    document.getElementById('slotsContainer').style.display = 'none';
-    selectedSlot = '';
-    document.getElementById('selectedTime').value = '';
-
-    const formattedDate = formatDate(date);
-
+  window[cbName] = function(js) {
     try {
-      const encoded = encodeURIComponent(formattedDate);
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20D%20WHERE%20C%3D%27${encoded}%27`;
-      const res = await fetch(url);
-      const text = await res.text();
-      const json = JSON.parse(text.substr(47).slice(0, -2));
-
-      bookedSlots = [];
-      if (json.table && json.table.rows) {
-        json.table.rows.forEach(row => {
-          if (row.c && row.c[0] && row.c[0].v) {
-            bookedSlots.push(row.c[0].v.trim());
-          }
+      if (js.table && js.table.rows) {
+        js.table.rows.forEach(row => {
+          if (!row.c) return;
+          const rowDate = row.c[3] ? String(row.c[3].v).trim() : '';
+          const rowTime = row.c[4] ? String(row.c[4].v).trim() : '';
+          if (rowDate === fd && rowTime) bookedList.push(rowTime);
         });
       }
-    } catch(e) {
-      bookedSlots = [];
-    }
+    } catch(e) {}
+    delete window[cbName];
+    if (document.body.contains(script)) document.body.removeChild(script);
+    renderSlots();
+  };
 
-    renderSlots(formattedDate);
+  script.onerror = function() {
+    delete window[cbName];
+    if (document.body.contains(script)) document.body.removeChild(script);
+    renderSlots(); // show all slots as available on error
+  };
+
+  document.body.appendChild(script);
+}
+
+function renderSlots() {
+  const grid = document.getElementById('slotGrid');
+  grid.innerHTML = '';
+  allSlots().forEach(s => {
+    const taken = bookedList.some(b => b.toLowerCase() === s.toLowerCase());
+    const btn = document.createElement('button');
+    btn.className = 'slot' + (taken ? ' booked' : '');
+    btn.textContent = s;
+    btn.disabled = taken;
+    if (!taken) btn.onclick = () => pickSlot(s, btn);
+    grid.appendChild(btn);
+  });
+  document.getElementById('slotMsg').style.display = 'none';
+  document.getElementById('slotWrap').style.display = 'block';
+}
+
+function pickSlot(s, btn) {
+  document.querySelectorAll('.slot').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected'); chosenSlot = s; clearErr();
+}
+
+// ── BOOK ──────────────────────────────────────────────────
+function showErr(msg) { const e = document.getElementById('errMsg'); e.textContent = msg; e.style.display = 'block'; }
+function clearErr() { document.getElementById('errMsg').style.display = 'none'; }
+
+async function bookAppointment() {
+  clearErr();
+  const phone = document.getElementById('phoneNumber').value.trim();
+  const name  = document.getElementById('patientName').value.trim();
+  const date  = document.getElementById('apptDate').value;
+  const note  = document.getElementById('note').value.trim();
+  if (!phone || phone.length !== 10 || isNaN(phone)) { showErr('Enter valid 10-digit phone number.'); return; }
+  if (!name) { showErr('Enter patient name.'); return; }
+  if (!date) { showErr('Select a date.'); return; }
+  if (!chosenSlot) { showErr('Select a time slot.'); return; }
+  const btn = document.getElementById('subBtn');
+  btn.textContent = 'Booking...'; btn.disabled = true;
+  const fd = fmtDate(date);
+  const ts = new Date().toLocaleString('en-IN');
+  try {
+    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,phone,date:fd,time:chosenSlot,note,timestamp:ts}) });
+  } catch(e) {}
+  btn.textContent = 'Book Appointment'; btn.disabled = false;
+
+  const pMsg = [`Hi ${name}!`,``,`Your appointment at ${CLINIC_NAME} is confirmed.`,``,`Date: ${fd}`,`Time: ${chosenSlot}`,``,`Find us here: ${CLINIC_LOC}`,``,`Please arrive 5 minutes early.`,`To cancel reply CANCEL.`].join('%0A');
+  const dMsg = [`New Appointment`,``,`Patient: ${name}`,`Phone: ${phone}`,`Date: ${fd}`,`Time: ${chosenSlot}`,`Note: ${note||'None'}`].join('%0A');
+
+  document.getElementById('waPatient').href = `https://wa.me/91${phone}?text=${pMsg}`;
+  document.getElementById('waDoctor').href  = `https://wa.me/${DOCTOR_NUM}?text=${dMsg}`;
+  document.getElementById('summaryBox').innerHTML = `
+    <div class="sum-row"><span>Patient</span><span>${name}</span></div>
+    <div class="sum-row"><span>Phone</span><span>${phone}</span></div>
+    <div class="sum-row"><span>Date</span><span>${fd}</span></div>
+    <div class="sum-row"><span>Time</span><span>${chosenSlot}</span></div>
+    ${note ? `<div class="sum-row"><span>Note</span><span>${note}</span></div>` : ''}`;
+  document.getElementById('formCard').style.display = 'none';
+  document.getElementById('successCard').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function resetForm() {
+  ['phoneNumber','patientName','apptDate','note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('retBanner').classList.remove('show');
+  document.getElementById('slotMsg').textContent = 'Select a date to see available slots';
+  document.getElementById('slotMsg').style.display = 'block';
+  document.getElementById('slotWrap').style.display = 'none';
+  document.getElementById('slotGrid').innerHTML = '';
+  chosenSlot = ''; bookedList = []; clearErr();
+  document.getElementById('formCard').style.display = 'block';
+  document.getElementById('successCard').style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+// ── CALENDAR ──────────────────────────────────────────────
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let allAppts = [];
+let calLoaded = false;
+let selectedCalDate = null;
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+async function initCalendar() {
+  if (!calLoaded) {
+    await fetchAllAppointments();
+    calLoaded = true;
+  }
+  renderCalendar();
+}
+
+function fetchAllAppointments() {
+  return new Promise((resolve) => {
+    const callbackName = 'sheetCallback_' + Date.now();
+    const script = document.createElement('script');
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&callback=${callbackName}&tq=SELECT%20*`;
+
+    window[callbackName] = function(js) {
+      try {
+        allAppts = [];
+        if (js.table && js.table.rows) {
+          js.table.rows.forEach(row => {
+            if (!row.c) return;
+            allAppts.push({
+              timestamp : row.c[0] ? String(row.c[0].v || '').trim() : '',
+              name      : row.c[1] ? String(row.c[1].v || '').trim() : '',
+              phone     : row.c[2] ? String(row.c[2].v || '').trim() : '',
+              date      : row.c[3] ? String(row.c[3].v || '').trim() : '',
+              time      : row.c[4] ? String(row.c[4].v || '').trim() : '',
+              note      : row.c[5] ? String(row.c[5].v || '').trim() : ''
+            });
+          });
+        }
+
+        // Debug panel
+        const panel = document.getElementById('debugPanel');
+        const debugEl = document.getElementById('debugDates');
+        panel.style.display = 'block';
+        if (allAppts.length > 0) {
+          debugEl.innerHTML = allAppts.map(a =>
+            `<div><b>${a.name}</b> — date: "<span style="color:green">${a.date}</span>" — time: "${a.time}"</div>`
+          ).join('');
+        } else {
+          debugEl.innerHTML = '<div style="color:red">Sheet is empty or no data rows found.</div>';
+        }
+      } catch(e) {
+        document.getElementById('debugDates').innerHTML = `<div style="color:red">Parse error: ${e.message}</div>`;
+        document.getElementById('debugPanel').style.display = 'block';
+      }
+
+      delete window[callbackName];
+      document.body.removeChild(script);
+      resolve();
+    };
+
+    script.src = url;
+    script.onerror = () => {
+      document.getElementById('debugPanel').style.display = 'block';
+      document.getElementById('debugDates').innerHTML = '<div style="color:red">Could not load sheet. Make sure it is set to public viewer.</div>';
+      delete window[callbackName];
+      resolve();
+    };
+    document.body.appendChild(script);
+  });
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  selectedCalDate = null;
+  document.getElementById('apptSection').style.display = 'none';
+  renderCalendar();
+}
+
+function renderCalendar() {
+  document.getElementById('calMonth').textContent = `${MONTHS[calMonth]} ${calYear}`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const daysInPrev  = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date();
+
+  // Build count map: date string → count
+  const countMap = {};
+  allAppts.forEach(a => {
+    if (!a.date) return;
+    countMap[a.date] = (countMap[a.date] || 0) + 1;
+  });
+
+  // Previous month filler cells
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell empty other-month';
+    cell.innerHTML = `<div class="cal-num">${daysInPrev - i}</div>`;
+    grid.appendChild(cell);
   }
 
-  function renderSlots(formattedDate) {
-    const allSlots = generateAllSlots();
-    const grid = document.getElementById('slotsGrid');
-    grid.innerHTML = '';
+  // Current month cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement('div');
+    const fd   = fmtDateFromParts(calYear, calMonth, d);
+    const cnt  = countMap[fd] || 0;
+    const isToday = (d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear());
+    const isSelected = selectedCalDate === fd;
 
-    allSlots.forEach(slot => {
-      const isBooked = bookedSlots.some(b => b.toLowerCase() === slot.toLowerCase());
-      const btn = document.createElement('button');
-      btn.className = 'slot-btn' + (isBooked ? ' booked' : '');
-      btn.textContent = slot;
-      btn.disabled = isBooked;
-      if (!isBooked) {
-        btn.onclick = () => selectSlot(slot, btn);
-      }
-      grid.appendChild(btn);
+    cell.className = 'cal-cell' + (isToday ? ' today' : '') + (isSelected ? ' selected' : '');
+    let inner = `<div class="cal-num">${d}</div>`;
+    if (cnt > 0) {
+      inner += `<div class="cal-dots">`;
+      const dots = Math.min(cnt, 3);
+      for (let i = 0; i < dots; i++) inner += `<div class="cal-dot"></div>`;
+      inner += `</div><div class="cal-count">${cnt}</div>`;
+    }
+    cell.innerHTML = inner;
+    cell.onclick = () => selectCalDate(fd, cell);
+    grid.appendChild(cell);
+  }
+
+  // Next month filler
+  const total = firstDay + daysInMonth;
+  const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let d = 1; d <= remaining; d++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell empty other-month';
+    cell.innerHTML = `<div class="cal-num">${d}</div>`;
+    grid.appendChild(cell);
+  }
+}
+
+function selectCalDate(fd, cell) {
+  selectedCalDate = fd;
+  document.querySelectorAll('.cal-cell').forEach(c => c.classList.remove('selected'));
+  cell.classList.add('selected');
+
+  const dayAppts = allAppts.filter(a => a.date === fd);
+  dayAppts.sort((a,b) => a.time.localeCompare(b.time));
+
+  const section = document.getElementById('apptSection');
+  const header  = document.getElementById('apptHeader');
+  const list    = document.getElementById('apptList');
+
+  header.textContent = `${dayAppts.length} Appointment${dayAppts.length !== 1 ? 's' : ''} — ${fd}`;
+  list.innerHTML = '';
+
+  if (dayAppts.length === 0) {
+    list.innerHTML = '<div class="empty">No appointments on this date</div>';
+  } else {
+    dayAppts.forEach(a => {
+      const row = document.createElement('div');
+      row.className = 'appt-row';
+      row.innerHTML = `
+        <div class="appt-time">${a.time}</div>
+        <div class="appt-info">
+          <div class="appt-name">${a.name}</div>
+          <div class="appt-sub">📱 ${a.phone}${a.note ? ' &nbsp;·&nbsp; 📝 ' + a.note : ''}</div>
+        </div>`;
+      list.appendChild(row);
     });
-
-    document.getElementById('slotsLoading').style.display = 'none';
-    document.getElementById('slotsContainer').style.display = 'block';
   }
 
-  function selectSlot(slot, btn) {
-    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedSlot = slot;
-    document.getElementById('selectedTime').value = slot;
-    hideError();
-  }
-
-  // ─── SUBMIT APPOINTMENT ──────────────────────────────────────
-  function showError(msg) {
-    const el = document.getElementById('errorMsg');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-  function hideError() {
-    document.getElementById('errorMsg').style.display = 'none';
-  }
-  function setLoading(loading) {
-    const btn = document.getElementById('submitBtn');
-    document.getElementById('btnText').textContent = loading ? 'Booking...' : 'Book Appointment';
-    document.getElementById('spinner').style.display = loading ? 'block' : 'none';
-    btn.disabled = loading;
-  }
-
-  async function submitAppointment() {
-    hideError();
-
-    const patientName = document.getElementById('patientName').value.trim();
-    const phoneNumber = document.getElementById('phoneNumber').value.trim();
-    const appointmentDate = document.getElementById('appointmentDate').value;
-    const note = document.getElementById('note').value.trim();
-
-    if (!phoneNumber || phoneNumber.length !== 10 || isNaN(phoneNumber)) { showError('Please enter a valid 10-digit phone number.'); return; }
-    if (!patientName) { showError('Please enter patient name.'); return; }
-    if (!appointmentDate) { showError('Please select a date.'); return; }
-    if (!selectedSlot) { showError('Please select a time slot.'); return; }
-
-    setLoading(true);
-
-    const formattedDate = formatDate(appointmentDate);
-    const timestamp = new Date().toLocaleString('en-IN');
-
-    // Save to sheet
-    try {
-      await saveToSheet(patientName, phoneNumber, formattedDate, selectedSlot, note, timestamp);
-    } catch(e) {
-      console.log('Save attempted');
-    }
-
-    setLoading(false);
-
-    // Build WhatsApp messages
-    const patientMsg = [
-      `Hi ${patientName}!`,
-      ``,
-      `Your appointment at ${CLINIC_NAME} is confirmed.`,
-      ``,
-      `Date: ${formattedDate}`,
-      `Time: ${selectedSlot}`,
-      ``,
-      `Find us here: ${CLINIC_LOCATION}`,
-      ``,
-      `Please arrive 5 minutes early.`,
-      `To cancel reply CANCEL.`
-    ].join('%0A');
-
-    const doctorMsg = [
-      `New Appointment`,
-      ``,
-      `Patient: ${patientName}`,
-      `Phone: ${phoneNumber}`,
-      `Date: ${formattedDate}`,
-      `Time: ${selectedSlot}`,
-      `Note: ${note || 'No note'}`
-    ].join('%0A');
-
-    const patientLink = `https://wa.me/91${phoneNumber}?text=${patientMsg}`;
-    const doctorLink = `https://wa.me/${DOCTOR_NUMBER}?text=${doctorMsg}`;
-
-    // Summary
-    document.getElementById('summary').innerHTML = `
-      <div class="summary-row"><span>Patient</span><span>${patientName}</span></div>
-      <div class="summary-row"><span>Phone</span><span>${phoneNumber}</span></div>
-      <div class="summary-row"><span>Date</span><span>${formattedDate}</span></div>
-      <div class="summary-row"><span>Time</span><span>${selectedSlot}</span></div>
-      ${note ? `<div class="summary-row"><span>Note</span><span>${note}</span></div>` : ''}
-    `;
-
-    document.getElementById('patientWABtn').href = patientLink;
-    document.getElementById('doctorWABtn').href = doctorLink;
-
-    document.getElementById('formCard').style.display = 'none';
-    document.getElementById('successCard').style.display = 'block';
-    window.scrollTo(0, 0);
-  }
-
-  async function saveToSheet(name, phone, date, time, note, timestamp) {
-    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('PASTE')) return;
-    const data = { name, phone, date, time, note, timestamp };
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-  }
-
-  function resetForm() {
-    document.getElementById('patientName').value = '';
-    document.getElementById('patientName').disabled = false;
-    document.getElementById('phoneNumber').value = '';
-    document.getElementById('appointmentDate').value = '';
-    document.getElementById('note').value = '';
-    document.getElementById('selectedTime').value = '';
-    document.getElementById('returningBanner').classList.remove('show');
-    document.getElementById('slotsContainer').style.display = 'none';
-    document.getElementById('noDateMsg').style.display = 'block';
-    selectedSlot = '';
-    bookedSlots = [];
-    hideError();
-    document.getElementById('formCard').style.display = 'block';
-    document.getElementById('successCard').style.display = 'none';
-    window.scrollTo(0, 0);
-  }
-
-  // ─── DASHBOARD ───────────────────────────────────────────────
-  async function loadDashboard() {
-    const date = document.getElementById('dashDate').value;
-    if (!date) return;
-
-    const formattedDate = formatDate(date);
-    const dashList = document.getElementById('dashList');
-    const dashCount = document.getElementById('dashCount');
-
-    dashList.innerHTML = '<div class="empty-dash"><div>⏳</div>Loading appointments...</div>';
-    dashCount.style.display = 'none';
-
-    try {
-      // Fetch ALL rows then filter by date in JavaScript
-      // This is more reliable than GViz SQL filtering
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20*`;
-      const res = await fetch(url);
-      const text = await res.text();
-      const json = JSON.parse(text.substr(47).slice(0, -2));
-
-      if (!json.table || !json.table.rows || json.table.rows.length === 0) {
-        dashList.innerHTML = '<div class="empty-dash"><div>📭</div>No appointments found</div>';
-        return;
-      }
-
-      // Filter rows matching selected date
-      // Sheet columns: timestamp(0), name(1), phone(2), date(3), time(4), note(5)
-      const filtered = json.table.rows.filter(row => {
-        const rowDate = row.c[3] ? String(row.c[3].v).trim() : '';
-        return rowDate === formattedDate;
-      });
-
-      // Sort by time
-      filtered.sort((a, b) => {
-        const ta = a.c[4] ? a.c[4].v : '';
-        const tb = b.c[4] ? b.c[4].v : '';
-        return ta.localeCompare(tb);
-      });
-
-      if (filtered.length === 0) {
-        dashList.innerHTML = `<div class="empty-dash"><div>📭</div>No appointments on ${formattedDate}</div>`;
-        return;
-      }
-
-      dashCount.textContent = `${filtered.length} appointment${filtered.length > 1 ? 's' : ''} on ${formattedDate}`;
-      dashCount.style.display = 'block';
-
-      dashList.innerHTML = '';
-      filtered.forEach(row => {
-        const name  = row.c[1] ? row.c[1].v : '-';
-        const phone = row.c[2] ? row.c[2].v : '-';
-        const time  = row.c[4] ? row.c[4].v : '-';
-        const note  = row.c[5] ? row.c[5].v : '';
-
-        const card = document.createElement('div');
-        card.className = 'appt-card';
-        card.innerHTML = `
-          <div class="appt-time">${time}</div>
-          <div class="appt-info">
-            <div class="appt-name">${name}</div>
-            <div class="appt-phone">📱 ${phone}</div>
-            ${note ? `<div class="appt-note">📝 ${note}</div>` : ''}
-          </div>
-        `;
-        dashList.appendChild(card);
-      });
-
-    } catch(e) {
-      console.error(e);
-      dashList.innerHTML = '<div class="empty-dash"><div>⚠️</div>Could not load. Make sure sheet is publicly shared.</div>';
-    }
-  }
-
-  // Load dashboard on page load
-  loadDashboard();
+  section.style.display = 'block';
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 </script>
-
 </body>
 </html>
