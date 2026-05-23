@@ -225,7 +225,7 @@ const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbwYq7pQZApqfXIT1A_H
 const DOCTOR_NUM  = '919600072961';
 const CLINIC_NAME = 'Sanjeev Clinic';
 const CLINIC_LOC  = 'https://maps.app.goo.gl/9KZaH98o9xp9ixF17';
-const SHEET_ID    = '1cO40VaIZ8YnTOOI9Ex_7uTQdLtMNyfBuLt0RoQgc9NE';
+// SHEET_ID not needed - data read through Apps Script securely
 const START_H = 17; const END_H = 21; const SLOT_MIN = 15;
 // ─────────────────────────────────────────────────────────
 
@@ -279,7 +279,6 @@ function checkReturning(phone) {
   const nameEl = document.getElementById('patientName');
   if (phone.length !== 10) { banner.classList.remove('show'); nameEl.value = ''; return; }
   retTimer = setTimeout(() => {
-    // Search in already loaded appointments
     const found = allAppts.find(a => a.phone === phone);
     if (found) {
       nameEl.value = found.name;
@@ -304,35 +303,16 @@ function loadSlots() {
   chosenSlot = '';
   bookedList = [];
 
-  // Load ALL sheet data then filter by date in JS
-  const cbName = 'slotCb_' + Date.now();
-  const script = document.createElement('script');
-  // No WHERE clause — just get everything
-  script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&callback=${cbName}`;
-
-  window[cbName] = function(js) {
-    try {
-      if (js.table && js.table.rows) {
-        js.table.rows.forEach(row => {
-          if (!row.c) return;
-          const rowDate = row.c[3] ? String(row.c[3].v).trim() : '';
-          const rowTime = row.c[4] ? String(row.c[4].v).trim() : '';
-          if (rowDate === fd && rowTime) bookedList.push(rowTime);
-        });
-      }
-    } catch(e) {}
-    delete window[cbName];
-    if (document.body.contains(script)) document.body.removeChild(script);
-    renderSlots();
-  };
-
-  script.onerror = function() {
-    delete window[cbName];
-    if (document.body.contains(script)) document.body.removeChild(script);
-    renderSlots(); // show all slots as available on error
-  };
-
-  document.body.appendChild(script);
+  // Use Apps Script to get booked slots securely
+  fetch(`${SCRIPT_URL}?action=slots&date=${encodeURIComponent(fd)}`)
+    .then(r => r.json())
+    .then(data => {
+      bookedList = data;
+      renderSlots();
+    })
+    .catch(() => {
+      renderSlots(); // show all slots on error
+    });
 }
 
 function renderSlots() {
@@ -427,26 +407,11 @@ async function initCalendar() {
 
 function fetchAllAppointments() {
   return new Promise((resolve) => {
-    const callbackName = 'sheetCallback_' + Date.now();
-    const script = document.createElement('script');
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&callback=${callbackName}&tq=SELECT%20*`;
-
-    window[callbackName] = function(js) {
-      try {
-        allAppts = [];
-        if (js.table && js.table.rows) {
-          js.table.rows.forEach(row => {
-            if (!row.c) return;
-            allAppts.push({
-              timestamp : row.c[0] ? String(row.c[0].v || '').trim() : '',
-              name      : row.c[1] ? String(row.c[1].v || '').trim() : '',
-              phone     : row.c[2] ? String(row.c[2].v || '').trim() : '',
-              date      : row.c[3] ? String(row.c[3].v || '').trim() : '',
-              time      : row.c[4] ? String(row.c[4].v || '').trim() : '',
-              note      : row.c[5] ? String(row.c[5].v || '').trim() : ''
-            });
-          });
-        }
+    // Use Apps Script to get all appointments securely
+    fetch(`${SCRIPT_URL}?action=appointments`)
+      .then(r => r.json())
+      .then(data => {
+        allAppts = data;
 
         // Debug panel
         const panel = document.getElementById('debugPanel');
@@ -457,26 +422,16 @@ function fetchAllAppointments() {
             `<div><b>${a.name}</b> — date: "<span style="color:green">${a.date}</span>" — time: "${a.time}"</div>`
           ).join('');
         } else {
-          debugEl.innerHTML = '<div style="color:red">Sheet is empty or no data rows found.</div>';
+          debugEl.innerHTML = '<div style="color:orange">No appointments found in sheet yet.</div>';
         }
-      } catch(e) {
-        document.getElementById('debugDates').innerHTML = `<div style="color:red">Parse error: ${e.message}</div>`;
+        resolve();
+      })
+      .catch(e => {
         document.getElementById('debugPanel').style.display = 'block';
-      }
-
-      delete window[callbackName];
-      document.body.removeChild(script);
-      resolve();
-    };
-
-    script.src = url;
-    script.onerror = () => {
-      document.getElementById('debugPanel').style.display = 'block';
-      document.getElementById('debugDates').innerHTML = '<div style="color:red">Could not load sheet. Make sure it is set to public viewer.</div>';
-      delete window[callbackName];
-      resolve();
-    };
-    document.body.appendChild(script);
+        document.getElementById('debugDates').innerHTML = `<div style="color:red">Error: ${e.message}</div>`;
+        allAppts = [];
+        resolve();
+      });
   });
 }
 
