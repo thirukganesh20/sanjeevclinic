@@ -38,7 +38,7 @@
 
   .header {
     background: var(--teal);
-    padding: 28px 20px 60px;
+    padding: 28px 20px 32px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -46,11 +46,6 @@
   .header::before {
     content: '';
     position: absolute;
-    bottom: -30px; left: 0; right: 0;
-    height: 60px;
-    background: var(--bg);
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  }
   .clinic-icon {
     width: 64px; height: 64px;
     background: rgba(255,255,255,0.15);
@@ -108,7 +103,7 @@
 
   .main {
     max-width: 480px;
-    margin: -20px auto 0;
+    margin: 0 auto;
     padding: 0 16px;
     position: relative; z-index: 2;
   }
@@ -495,7 +490,7 @@
 
 <!-- BOOKING TAB -->
 <div class="tab-content active" id="tab-booking">
-<div class="main">
+<div class="main" style="padding-top:20px;">
 
   <div class="info-row">
     <div class="info-chip"><div class="ic-icon">⚡</div>Instant Confirm</div>
@@ -884,27 +879,46 @@
     dashCount.style.display = 'none';
 
     try {
-      const encoded = encodeURIComponent(formattedDate);
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20A%2CB%2CC%2CD%2CE%20WHERE%20C%3D%27${encoded}%27%20ORDER%20BY%20D`;
+      // Fetch ALL rows then filter by date in JavaScript
+      // This is more reliable than GViz SQL filtering
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=SELECT%20*`;
       const res = await fetch(url);
       const text = await res.text();
       const json = JSON.parse(text.substr(47).slice(0, -2));
 
       if (!json.table || !json.table.rows || json.table.rows.length === 0) {
-        dashList.innerHTML = '<div class="empty-dash"><div>📭</div>No appointments for this date</div>';
+        dashList.innerHTML = '<div class="empty-dash"><div>📭</div>No appointments found</div>';
         return;
       }
 
-      const rows = json.table.rows;
-      dashCount.textContent = `${rows.length} appointment${rows.length > 1 ? 's' : ''} on ${formattedDate}`;
+      // Filter rows matching selected date
+      // Sheet columns: timestamp(0), name(1), phone(2), date(3), time(4), note(5)
+      const filtered = json.table.rows.filter(row => {
+        const rowDate = row.c[3] ? String(row.c[3].v).trim() : '';
+        return rowDate === formattedDate;
+      });
+
+      // Sort by time
+      filtered.sort((a, b) => {
+        const ta = a.c[4] ? a.c[4].v : '';
+        const tb = b.c[4] ? b.c[4].v : '';
+        return ta.localeCompare(tb);
+      });
+
+      if (filtered.length === 0) {
+        dashList.innerHTML = `<div class="empty-dash"><div>📭</div>No appointments on ${formattedDate}</div>`;
+        return;
+      }
+
+      dashCount.textContent = `${filtered.length} appointment${filtered.length > 1 ? 's' : ''} on ${formattedDate}`;
       dashCount.style.display = 'block';
 
       dashList.innerHTML = '';
-      rows.forEach(row => {
-        const name = row.c[1] ? row.c[1].v : '';
-        const phone = row.c[2] ? row.c[2].v : '';
-        const time = row.c[3] ? row.c[3].v : '';
-        const note = row.c[4] ? row.c[4].v : '';
+      filtered.forEach(row => {
+        const name  = row.c[1] ? row.c[1].v : '-';
+        const phone = row.c[2] ? row.c[2].v : '-';
+        const time  = row.c[4] ? row.c[4].v : '-';
+        const note  = row.c[5] ? row.c[5].v : '';
 
         const card = document.createElement('div');
         card.className = 'appt-card';
@@ -920,7 +934,8 @@
       });
 
     } catch(e) {
-      dashList.innerHTML = '<div class="empty-dash"><div>⚠️</div>Could not load appointments. Check internet connection.</div>';
+      console.error(e);
+      dashList.innerHTML = '<div class="empty-dash"><div>⚠️</div>Could not load. Make sure sheet is publicly shared.</div>';
     }
   }
 
